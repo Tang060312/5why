@@ -31,9 +31,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PLACEHOLDER_KEY = 'sk-在这里填入你的APIKey';
 
-/* 系统提示词：直接读取 public/promt.txt（每次请求时读取，
+/* 系统提示词：直接读取仓库根目录的 promt.txt（每次请求时读取，
    修改 promt.txt 后无需重启服务即可生效） */
-const PROMPT_FILE = path.join(__dirname, 'public', 'promt.txt');
+const PROMPT_FILE = path.join(__dirname, '..', 'promt.txt');
 const FALLBACK_PROMPT = '你是一位5Why根因分析助手，请逐层追问用户，引导其找到根本原因并形成改善措施。';
 
 function getSystemPrompt() {
@@ -50,7 +50,7 @@ function isAIConfigured() {
 }
 
 app.use(express.json({ limit: '2mb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..')));
 
 /* 调用真实 AI（OpenAI 兼容流式接口），onChunk 收到一段文本 */
 async function callAIStream(apiMessages, onChunk) {

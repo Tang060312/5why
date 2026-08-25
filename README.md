@@ -1,40 +1,39 @@
 # 5Why 根因分析工具（AI 对话式）
 
-AI 对话式 5Why 分析工具：用户描述问题 → AI 依据 `public/promt.txt` 中的提示词逐层追问（一次一问、验证证据、拒绝个人归因）→ 直至找到可改善的根本原因。支持多会话历史管理、导出 Markdown 报告。
+AI 对话式 5Why 分析工具：用户描述问题 → AI 依据 `promt.txt` 中的提示词逐层追问（一次一问、验证证据、拒绝个人归因）→ 直至找到可改善的根本原因。支持多会话历史管理、导出 Markdown 报告。
 
 支持**两种运行方式**：本地模式（Node 代理）和 GitHub Pages 静态部署（浏览器直连 AI，使用者自填 Key）。
 
 ## 方式一：本地运行
 
 ```bash
+cd server
 npm install
 npm start
 ```
 
-访问 http://localhost:3000（AI 调用走 `server.js` 代理，配置见 `server.js` 顶部 `AI_CONFIG`）。
+访问 http://localhost:3000（AI 调用走 `server/server.js` 代理，配置见其顶部 `AI_CONFIG`）。
 
 ## 方式二：GitHub Pages 部署（供他人使用）
 
-GitHub Pages 只能托管静态文件，因此部署版由**浏览器直接调用大模型 API**，每个使用者点击「设置」填入自己的 API Key（仅存于各自浏览器 localStorage，不会泄露你的 Key）。
+站点文件在**仓库根目录**，GitHub Pages 由浏览器直接调用大模型 API，每个使用者点击「设置」填入自己的 API Key（仅存于各自浏览器 localStorage，不会泄露你的 Key）。
 
-### 部署步骤
+### 启用步骤（设置一次即可）
 
-1. 在 GitHub 上新建公开仓库，命名为 `5why`（不要勾选初始化 README）
-2. 本地推送（仓库已初始化并提交完毕）：
+1. 打开 https://github.com/Tang060312/5why/settings/pages
+2. **Source 选择「Deploy from a branch」**
+3. Branch 选择 **`main`**，目录选择 **`/ (root)`** → 点 Save
+4. 等待 1-2 分钟（首次构建），访问 `https://tang060312.github.io/5why/`
 
-   ```bash
-   git remote add origin https://github.com/你的用户名/5why.git
-   git push -u origin main
-   ```
+之后每次 `git push` 都会自动重新部署。
 
-3. 打开仓库 → Settings → Pages → **Source 选择「GitHub Actions」**（工作流会自动部署 `public/` 目录）
-4. 等待 Actions 跑完（约 1 分钟），访问 `https://你的用户名.github.io/5why/`
+> 若希望使用 GitHub Actions 方式（需 Source 选「GitHub Actions」），本仓库已附带 `.github/workflows/deploy.yml`，两种方式均可。
 
 ### 使用说明
 
 - 打开页面后点击右上角「设置」，填写自己的 **API Key**（DeepSeek 开放平台申请，默认可不改接口地址与模型）
 - 填写后即可对话；Key 保存在本浏览器 localStorage
-- 修改提示词：编辑 `public/promt.txt` 后推送，重新部署自动生效
+- 修改提示词：编辑根目录 `promt.txt` 后推送即可
 
 ### 注意事项
 
@@ -45,14 +44,14 @@ GitHub Pages 只能托管静态文件，因此部署版由**浏览器直接调�
 
 ```
 5why/
-├── server.js                 # 本地模式：Express + AI 代理（AI_CONFIG 在此配置）
-├── package.json
-├── .github/workflows/deploy.yml  # GitHub Pages 自动部署工作流
-├── public/                   # 站点根目录（Pages 部署此目录，也可直接静态托管）
-│   ├── index.html
-│   ├── style.css
-│   ├── app.js                # 自动识别本地/部署模式
-│   ├── promt.txt             # AI 系统提示词（修改后部署即生效）
+├── index.html               # 站点根目录（GitHub Pages 部署内容）
+├── style.css
+├── app.js                   # 自动识别本地/部署模式
+├── promt.txt                # AI 系统提示词（修改后部署即生效）
+├── server/                  # 本地模式：Node 代理服务
+│   ├── server.js            #   Express + AI 代理（AI_CONFIG 在此配置）
+│   └── package.json
+└── .github/workflows/deploy.yml  # GitHub Actions 部署工作流（可选）
 ```
 
 ## 接口说明（本地模式）
@@ -68,7 +67,7 @@ GitHub Pages 只能托管静态文件，因此部署版由**浏览器直接调�
 }
 ```
 
-服务端自动注入 `public/promt.txt` 作为系统提示词（最多携带最近 30 条消息）。返回 SSE 流：`data: {"type":"chunk","content":"..."}` 直至 `data: {"type":"done"}`。
+服务端自动注入 `promt.txt` 作为系统提示词（最多携带最近 30 条消息）。返回 SSE 流：`data: {"type":"chunk","content":"..."}` 直至 `data: {"type":"done"}`。
 
 ## 页面功能
 
