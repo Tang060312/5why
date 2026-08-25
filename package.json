@@ -1,0 +1,12 @@
+{
+  "name": "5why-ai",
+  "version": "1.0.0",
+  "description": "5Why 根因分析工具（AI 对话式）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
