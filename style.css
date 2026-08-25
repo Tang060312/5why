@@ -124,7 +124,7 @@ body {
 .main {
   flex: 1;
   display: grid;
-  grid-template-rows: auto 2fr auto 1fr;
+  grid-template-rows: auto 2fr 1fr;
   min-width: 0;
 }
 
