@@ -227,7 +227,7 @@ body {
 /* AI 校验回复：结论/理由/下一步 卡片 */
 .judge-line {
   display: block;
-  margin: 8px 0;
+  margin: 4px 0;
   padding: 8px 12px;
   border-radius: 10px;
   border: 1px solid var(--border);
