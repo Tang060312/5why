@@ -182,6 +182,24 @@
     }[c]));
   }
 
+  /* 将 AI 回复中的"结论/理由/下一步"三行渲染为突出卡片，结论按合理程度着色 */
+  function formatAI(text) {
+    return esc(String(text)).split('\n').map((line) => {
+      const m = line.match(/^(结论|理由|下一步)[：:](.*)$/);
+      if (!m) return line;
+      const label = m[1];
+      const rest = m[2];
+      if (label === '结论') {
+        let cls = '';
+        if (/偏离|不合理/.test(rest)) cls = 'err';
+        else if (/基本/.test(rest)) cls = 'warn';
+        else if (/合理/.test(rest)) cls = 'ok';
+        return `<span class="judge-line conclusion ${cls}"><b class="jl">结论：</b>${rest}</span>`;
+      }
+      return `<span class="judge-line"><b class="jl">${label}：</b>${rest}</span>`;
+    }).join('\n');
+  }
+
   function renderMessage(m) {
     const wrap = document.createElement('div');
     wrap.className = 'msg ' + m.role;
@@ -194,7 +212,8 @@
     label.className = 'bubble-label';
     label.textContent = m.role === 'user' ? '我' : 'AI';
     const p = document.createElement('p');
-    p.textContent = m.content;
+    if (m.role === 'assistant') p.innerHTML = formatAI(m.content);
+    else p.textContent = m.content;
     bubble.appendChild(label);
     bubble.appendChild(p);
     wrap.appendChild(av);
@@ -352,7 +371,7 @@
       const err = await streamReply(current.messages, (chunk) => {
         if (typing.parentNode) typing.remove();
         full += chunk;
-        p.textContent = full;
+        p.innerHTML = formatAI(full);
         scrollToBottom();
       });
       if (err) throw err;

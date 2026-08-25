@@ -224,6 +224,32 @@ body {
 .bubble p { white-space: pre-wrap; word-break: break-word; }
 .bubble p + p { margin-top: 8px; }
 
+/* AI 校验回复：结论/理由/下一步 卡片 */
+.judge-line {
+  display: block;
+  margin: 8px 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  line-height: 1.6;
+}
+
+.judge-line .jl {
+  font-weight: 700;
+  color: #334155;
+  margin-right: 2px;
+}
+
+.judge-line.conclusion { border-width: 1.5px; }
+
+.judge-line.conclusion.ok { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+.judge-line.conclusion.ok .jl { color: #047857; }
+.judge-line.conclusion.warn { background: #fffbeb; border-color: #fcd34d; color: #92400e; }
+.judge-line.conclusion.warn .jl { color: #b45309; }
+.judge-line.conclusion.err { background: #fef2f2; border-color: #fca5a5; color: #991b1b; }
+.judge-line.conclusion.err .jl { color: #b91c1c; }
+
 /* ---------- typing / loading ---------- */
 .typing {
   display: inline-flex;
