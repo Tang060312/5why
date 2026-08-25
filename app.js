@@ -387,7 +387,7 @@
   $('#btn-settings-cancel').addEventListener('click', () => $('#settings-modal').classList.add('hidden'));
   const autoResize = (el) => {
     el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+    el.style.height = Math.min(el.scrollHeight, 200) + 'px';
   };
   [input, $('#chat-answer')].forEach((el) => {
     el.addEventListener('keydown', (e) => {
