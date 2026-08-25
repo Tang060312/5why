@@ -198,12 +198,18 @@
       }
       return `<span class="judge-line"><b class="jl">${label}：</b>${rest}</span>`;
     });
-    /* 去掉紧邻卡片前后的空行，卡片间距只由 margin 决定 */
+    /* 去掉紧邻卡片前后的空行；卡片边界不输出换行符，避免 pre-wrap 额外渲染空行高 */
     const isCard = (l) => l && l.indexOf('<span class="judge-line') === 0;
-    return lines.filter((line, i) => {
+    const kept = lines.filter((line, i) => {
       if (line.trim() !== '') return true;
       return !(isCard(lines[i - 1]) || isCard(lines[i + 1]));
-    }).join('\n');
+    });
+    return kept.map((line, i) => {
+      if (i === 0) return line;
+      const prevIsCard = isCard(kept[i - 1]);
+      const curIsCard = isCard(line);
+      return prevIsCard || curIsCard ? line : '\n' + line;
+    }).join('');
   }
 
   function renderMessage(m) {
