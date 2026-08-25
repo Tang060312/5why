@@ -184,7 +184,7 @@
 
   /* 将 AI 回复中的"结论/理由/下一步"三行渲染为突出卡片，结论按合理程度着色 */
   function formatAI(text) {
-    return esc(String(text)).split('\n').map((line) => {
+    const lines = esc(String(text)).split('\n').map((line) => {
       const m = line.match(/^(结论|理由|下一步)[：:](.*)$/);
       if (!m) return line;
       const label = m[1];
@@ -197,6 +197,12 @@
         return `<span class="judge-line conclusion ${cls}"><b class="jl">结论：</b>${rest}</span>`;
       }
       return `<span class="judge-line"><b class="jl">${label}：</b>${rest}</span>`;
+    });
+    /* 去掉紧邻卡片前后的空行，卡片间距只由 margin 决定 */
+    const isCard = (l) => l && l.indexOf('<span class="judge-line') === 0;
+    return lines.filter((line, i) => {
+      if (line.trim() !== '') return true;
+      return !(isCard(lines[i - 1]) || isCard(lines[i + 1]));
     }).join('\n');
   }
 
