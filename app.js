@@ -2,12 +2,13 @@
   const $ = (sel) => document.querySelector(sel);
   const chat = $('#chat');
   const input = $('#chat-input');
+  const ctxInput = $('#chat-context');
   const sendBtn = $('#btn-send');
   const listEl = $('#session-list');
 
   const SESSIONS_KEY = '5why_sessions';
   const CONFIG_KEY = '5why_ai_config';
-  const GREETING = '你好，我是 5Why 分析助手。告诉我你遇到的问题，我会逐层追问"为什么"，帮你找到根本原因。';
+  const GREETING = '你好，我是 5Why 分析助手。\n\n请在下方"问题背景"区域描述你遇到的问题（建议包含：具体异常、发生时间、发生地点、涉及对象、影响程度、正常标准与实际差异）。提交后我会逐层追问"为什么"，你也可以在"问题 / 我的解答"两栏填写自己的思考，由我校验方向是否合理。';
   const FALLBACK_PROMPT = '你是一位5Why根因分析助手，请逐层追问用户，引导其找到根本原因并形成改善措施。';
 
   /* 本地模式：通过本机 server.js 代理调用（读取 server.js 的 AI_CONFIG 与 public/promt.txt）
@@ -205,7 +206,16 @@
     chat.innerHTML = '';
     if (!current) return;
     current.messages.forEach(renderMessage);
+    applyInputPhase();
     scrollToBottom();
+  }
+
+  /* 输入区两阶段：尚无用户消息时显示"问题背景"单栏，提交后切换为"问题+我的解答"双栏 */
+  function applyInputPhase() {
+    const context = !current.messages.some((m) => m.role === 'user');
+    $('#context-field').classList.toggle('hidden', !context);
+    $('#qa-fields').classList.toggle('hidden', context);
+    return context;
   }
 
   function scrollToBottom() {
@@ -215,6 +225,7 @@
   function setInputEnabled(enabled) {
     busy = !enabled;
     input.disabled = !enabled;
+    ctxInput.disabled = !enabled;
     $('#chat-answer').disabled = !enabled;
     sendBtn.disabled = !enabled;
     input.placeholder = enabled ? '输入问题或回答，Enter 发送，Shift+Enter 换行' : 'AI 正在回复中...';
@@ -286,9 +297,11 @@
   }
 
   async function onSubmit() {
-    const text = input.value.trim();
+    if (busy || !current) return;
+    const inContext = applyInputPhase();
+    const text = (inContext ? ctxInput.value : input.value).trim();
     const answer = $('#chat-answer').value.trim();
-    if (!text || busy || !current) return;
+    if (!text) return;
 
     if (!IS_PROXY) {
       const cfg = loadConfig();
@@ -298,10 +311,11 @@
       }
     }
 
-    const content = answer
-      ? `【问题】${text}\n【我的解答】${answer}`
-      : text;
+    const content = inContext
+      ? text
+      : (answer ? `【问题】${text}\n【我的解答】${answer}` : text);
     current.messages.push({ role: 'user', content });
+    ctxInput.value = '';
     input.value = '';
     $('#chat-answer').value = '';
     renderChat();
@@ -389,7 +403,7 @@
     el.style.height = 'auto';
     el.style.height = Math.min(el.scrollHeight, 200) + 'px';
   };
-  [input, $('#chat-answer')].forEach((el) => {
+  [input, $('#chat-answer'), ctxInput].forEach((el) => {
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();

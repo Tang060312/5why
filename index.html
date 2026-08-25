@@ -37,13 +37,19 @@
 
     <footer class="input-bar-wrap">
       <div id="input-bar" class="input-bar">
-        <div class="qa-field">
-          <div class="qa-label">问题</div>
-          <textarea id="chat-input" rows="2" placeholder="输入问题或回答，Enter 发送，Shift+Enter 换行"></textarea>
+        <div id="context-field" class="qa-field context-field">
+          <div class="qa-label">问题背景</div>
+          <textarea id="chat-context" rows="3" placeholder="描述问题背景：具体异常、发生时间、发生地点、涉及对象、影响程度、正常标准与实际差异。Enter 发送，Shift+Enter 换行"></textarea>
         </div>
-        <div class="qa-field">
-          <div class="qa-label">我的解答 <em>可选</em></div>
-          <textarea id="chat-answer" rows="2" placeholder="写下你对当前问题的解答，AI 将校验方向是否合理"></textarea>
+        <div id="qa-fields" class="qa-fields hidden">
+          <div class="qa-field">
+            <div class="qa-label">问题</div>
+            <textarea id="chat-input" rows="2" placeholder="输入问题或回答，Enter 发送，Shift+Enter 换行"></textarea>
+          </div>
+          <div class="qa-field">
+            <div class="qa-label">我的解答 <em>可选</em></div>
+            <textarea id="chat-answer" rows="2" placeholder="写下你对当前问题的解答，AI 将校验方向是否合理"></textarea>
+          </div>
         </div>
         <button id="btn-send" class="btn btn-primary send-btn">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

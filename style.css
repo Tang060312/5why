@@ -310,6 +310,17 @@ body {
   box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
 }
 
+.hidden { display: none; }
+
+.qa-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 14px;
+}
+
+.context-field textarea { min-height: 180px; }
+
 .qa-field {
   flex: 1;
   min-width: 0;
@@ -427,5 +438,6 @@ body {
   .sidebar { display: none; }
   .bubble { max-width: 90%; }
   .input-bar { flex-direction: column; align-items: stretch; }
+  .qa-fields { flex-direction: column; }
   .send-btn { width: 100%; }
 }
