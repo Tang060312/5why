@@ -37,22 +37,20 @@
 
     <footer class="input-bar-wrap">
       <div id="input-bar" class="input-bar">
-        <div class="input-main">
-          <textarea id="chat-input" rows="1" placeholder="输入问题或回答，Enter 发送，Shift+Enter 换行"></textarea>
-          <div id="answer-wrap" class="answer-wrap hidden">
-            <textarea id="chat-answer" rows="1" placeholder="我的解答（可选）：写下你对当前问题的解答，AI 将校验你的问题与解答是否合理、方向是否跑偏"></textarea>
-            <button id="btn-answer-close" class="answer-close" title="收起">×</button>
-          </div>
+        <div class="qa-field">
+          <div class="qa-label">问题</div>
+          <textarea id="chat-input" rows="2" placeholder="输入问题或回答，Enter 发送，Shift+Enter 换行"></textarea>
         </div>
-        <div class="input-side">
-          <button id="btn-answer-open" class="btn btn-ghost" title="填上你自己的解答，由 AI 校验问题方向">＋ 解答</button>
-          <button id="btn-send" class="btn btn-primary send-btn">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            发送
-          </button>
+        <div class="qa-field">
+          <div class="qa-label">我的解答 <em>可选</em></div>
+          <textarea id="chat-answer" rows="2" placeholder="写下你对当前问题的解答，AI 将校验方向是否合理"></textarea>
         </div>
+        <button id="btn-send" class="btn btn-primary send-btn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+          </svg>
+          发送
+        </button>
       </div>
     </footer>
   </div>

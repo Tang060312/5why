@@ -7,7 +7,7 @@
 
   const SESSIONS_KEY = '5why_sessions';
   const CONFIG_KEY = '5why_ai_config';
-  const GREETING = '你好，我是 5Why 分析助手。\n\n你可以这样使用我：\n1. 直接描述问题 → 我逐层追问"为什么"（一次一问，保持简洁）。\n2. 自己已有想法 → 在输入框写下你的问题，点「＋ 解答」填上自己的解答，我会校验这一问一答是否合理、方向是否跑偏，并继续引导下一层。\n\n建议问题描述包含：具体异常、发生时间、发生地点、涉及对象、影响程度、正常标准与实际差异。';
+  const GREETING = '你好，我是 5Why 分析助手。\n\n你可以这样使用我：\n1. 直接描述问题 → 我逐层追问"为什么"（一次一问，保持简洁）。\n2. 自己已有想法 → 左侧写问题、右侧填自己的解答，我会校验这一问一答是否合理、方向是否跑偏，再继续引导下一层。\n\n建议问题描述包含：具体异常、发生时间、发生地点、涉及对象、影响程度、正常标准与实际差异。';
   const FALLBACK_PROMPT = '你是一位5Why根因分析助手，请逐层追问用户，引导其找到根本原因并形成改善措施。';
 
   /* 本地模式：通过本机 server.js 代理调用（读取 server.js 的 AI_CONFIG 与 public/promt.txt）
@@ -220,12 +220,6 @@
     input.placeholder = enabled ? '输入问题或回答，Enter 发送，Shift+Enter 换行' : 'AI 正在回复中...';
   }
 
-  function toggleAnswerWrap(show) {
-    $('#answer-wrap').classList.toggle('hidden', !show);
-    $('#btn-answer-open').classList.toggle('hidden', show);
-    if (show) $('#chat-answer').focus();
-  }
-
   /* ---------- AI 接口调用 ----------
      统一解析两种 SSE 格式：
        - 本地代理：data: {"type":"chunk","content":"..."}
@@ -310,7 +304,6 @@
     current.messages.push({ role: 'user', content });
     input.value = '';
     $('#chat-answer').value = '';
-    toggleAnswerWrap(false);
     renderChat();
     touchSession();
 
@@ -389,14 +382,12 @@
   /* ---------- 事件绑定 ---------- */
   $('#btn-new-chat').addEventListener('click', newSession);
   $('#btn-send').addEventListener('click', onSubmit);
-  $('#btn-answer-open').addEventListener('click', () => toggleAnswerWrap(true));
-  $('#btn-answer-close').addEventListener('click', () => toggleAnswerWrap(false));
   $('#btn-settings').addEventListener('click', openSettings);
   $('#btn-settings-save').addEventListener('click', closeSettings);
   $('#btn-settings-cancel').addEventListener('click', () => $('#settings-modal').classList.add('hidden'));
   const autoResize = (el) => {
     el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
   };
   [input, $('#chat-answer')].forEach((el) => {
     el.addEventListener('keydown', (e) => {
